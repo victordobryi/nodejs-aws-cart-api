@@ -11,7 +11,7 @@ export class CartItem {
   @JoinColumn({ name: 'cart_id' })
   cart: Cart;
 
-  @Column('uuid')
+  @PrimaryColumn({ type: 'uuid', nullable: false })
   product_id: string;
 
   @ManyToOne(() => Product, (product) => product.cartItems)

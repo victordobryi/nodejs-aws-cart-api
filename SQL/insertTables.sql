@@ -26,5 +26,9 @@ VALUES
 INSERT INTO cart_items (cart_id, product_id, count)
 VALUES
     ((SELECT id FROM carts WHERE status = 'OPEN' LIMIT 1), '11111111-1111-1111-1111-111111111111', 3),
-    ((SELECT id FROM carts WHERE status = 'ORDERED' LIMIT 1), '22222222-2222-2222-2222-222222222222', 2),
-    ((SELECT id FROM carts WHERE status = 'OPEN' LIMIT 1), '33333333-3333-3333-3333-333333333333', 1);
+    ((SELECT id FROM carts WHERE status = 'ORDERED' LIMIT 1), '22222222-2222-2222-2222-222222222222', 2)
+
+-- Insert orders
+INSERT INTO orders (id, user_id, cart_id, payment, delivery, comments, status, total) VALUES
+    ((SELECT id FROM users WHERE name = 'John Doe'), (SELECT id FROM carts WHERE status = 'OPEN' LIMIT 1), '{"method": "credit_card", "amount": 50}', '{"address": "test address 1"}', 'Fast delivery', 'PROCESSING', 50.00),
+    ((SELECT id FROM users WHERE name = 'Jane Smith'), (SELECT id FROM carts WHERE status = 'ORDERED' LIMIT 1), '{"method": "paypal", "amount": 75}', '{"address": "test address 2"}', 'Standard delivery', 'SHIPPED', 75.00);

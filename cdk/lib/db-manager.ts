@@ -4,6 +4,7 @@ import { User } from '../../src/entities/users.entity';
 import { Cart } from '../../src/entities/carts.entity';
 import { CartItem } from '../../src/entities/cart_items.entity';
 import { Product } from '../../src/entities/products.entity';
+import { Order } from '../../src/entities/orders.entity';
 
 let dataSource: DataSource;
 
@@ -24,7 +25,7 @@ const getDatabaseConnection = async (): Promise<EntityManager> => {
       connectTimeoutMS: 30000,
       synchronize: true,
       useUTC: true,
-      entities: [User, Cart, CartItem, Product],
+      entities: [User, Cart, CartItem, Product, Order],
       logging: true,
       ssl: { rejectUnauthorized: false },
     });

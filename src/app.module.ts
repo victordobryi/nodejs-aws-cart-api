@@ -8,6 +8,7 @@ import { Cart } from './entities/carts.entity';
 import { CartItem } from './entities/cart_items.entity';
 import { User } from './entities/users.entity';
 import { Product } from './entities/products.entity';
+import { Order } from './entities/orders.entity';
 import 'dotenv/config';
 
 @Module({
@@ -22,7 +23,7 @@ import 'dotenv/config';
       username: process.env.DATABASE_USERNAME,
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
-      entities: [Cart, CartItem, User, Product],
+      entities: [Cart, CartItem, User, Product, Order],
     }),
   ],
   controllers: [AppController],

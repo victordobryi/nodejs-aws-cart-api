@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 import { CartItem } from './cart_items.entity';
 import { User } from './users.entity';
+import { Order } from './orders.entity';
 
 @Entity({ name: 'carts' })
 export class Cart {
@@ -35,4 +36,8 @@ export class Cart {
   @OneToMany(() => CartItem, (cartItem) => cartItem.cart)
   @JoinColumn({ name: 'id' })
   items: CartItem[];
+
+  @OneToMany(() => Order, (cartItems) => cartItems.cart)
+  @JoinColumn({ name: 'id' })
+  orders: Order[];
 }
