@@ -17,10 +17,16 @@ export class ApiGateway extends RestApi {
         allowMethods: Cors.ALL_METHODS,
         allowHeaders: Cors.DEFAULT_HEADERS,
       },
+      ...props,
     });
   }
 
-  addIntegration(method: string, path: string, lambda: IFunction, props?: MethodOptions) {
+  addIntegration(
+    method: string,
+    path: string,
+    lambda: IFunction,
+    props?: MethodOptions,
+  ) {
     const resource = this.root.resourceForPath(path);
     resource.addMethod(method, new LambdaIntegration(lambda), props);
   }
