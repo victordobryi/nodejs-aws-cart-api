@@ -3,6 +3,7 @@ import { environment } from './environmet';
 import { User } from '../../src/entities/users.entity';
 import { Cart } from '../../src/entities/carts.entity';
 import { CartItem } from '../../src/entities/cart_items.entity';
+import { Product } from '../../src/entities/products.entity';
 
 let dataSource: DataSource;
 
@@ -12,6 +13,7 @@ const getDatabaseConnection = async (): Promise<EntityManager> => {
     return dataSource.manager;
   } else {
     console.log('No DB Connection Found! Creating New Connection!');
+
     dataSource = new DataSource({
       type: 'postgres',
       host: environment.DATABASE_HOST,
@@ -22,7 +24,9 @@ const getDatabaseConnection = async (): Promise<EntityManager> => {
       connectTimeoutMS: 30000,
       synchronize: true,
       useUTC: true,
-      entities: [User, Cart, CartItem],
+      entities: [User, Cart, CartItem, Product],
+      logging: true,
+      ssl: { rejectUnauthorized: false },
     });
     return await dataSource
       .initialize()

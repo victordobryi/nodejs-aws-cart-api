@@ -1,12 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-
 import { v4 } from 'uuid';
-
 import { Cart, CartStatuses } from '../models';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Cart as CartEntity } from 'src/entities/carts.entity';
+import { Cart as CartEntity } from '../../entities/carts.entity';
 import { Repository } from 'typeorm';
-import { CartItem } from 'src/entities/cart_items.entity';
+import { CartItem } from '../../entities/cart_items.entity';
 
 @Injectable()
 export class CartService {
@@ -37,8 +35,6 @@ export class CartService {
       updated_at: now,
       status: CartStatuses.OPEN,
     };
-
-    this.userCarts[userId] = userCart;
 
     await this.userCarts.insert(userCart);
     return { ...userCart, items: [] };

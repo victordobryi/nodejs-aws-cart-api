@@ -10,9 +10,8 @@ import {
 } from 'typeorm';
 import { CartItem } from './cart_items.entity';
 import { User } from './users.entity';
-import { CartStatuses } from 'src/cart';
 
-@Entity()
+@Entity({ name: 'carts' })
 export class Cart {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -30,12 +29,8 @@ export class Cart {
   @UpdateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   updated_at: Date;
 
-  @Column({
-    type: 'enum',
-    enum: CartStatuses,
-    default: CartStatuses.OPEN,
-  })
-  status: CartStatuses;
+  @Column({ enum: ['OPEN', 'ORDERED'] })
+  status: string;
 
   @OneToMany(() => CartItem, (cartItem) => cartItem.cart)
   @JoinColumn({ name: 'id' })
