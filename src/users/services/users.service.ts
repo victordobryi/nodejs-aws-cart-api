@@ -14,14 +14,14 @@ export class UsersService {
     private readonly users: Repository<UserEntity>,
   ) {}
 
-  async findOne(userId: string) {
+  async findOne(name: string) {
     try {
       const user = await this.users.findOne({
-        where: { id: userId },
+        where: { name },
       });
-      if (!user) {
-        throw new NotFoundException('User not found');
-      }
+
+      if (!user) throw new NotFoundException('User not found');
+
       return user;
     } catch (error) {
       console.log(error);
@@ -30,10 +30,7 @@ export class UsersService {
 
   async createOne({ name, password }: User) {
     const id = v4();
-    const newUser = { id: name || id, name, password };
-
-    this.users[id] = newUser;
-
+    const newUser = { id, name, password };
     await this.users.save(newUser);
     return newUser;
   }

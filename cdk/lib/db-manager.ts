@@ -26,7 +26,6 @@ const getDatabaseConnection = async (): Promise<EntityManager> => {
       synchronize: true,
       useUTC: true,
       entities: [User, Cart, CartItem, Product, Order],
-      logging: true,
       ssl: { rejectUnauthorized: false },
     });
     return await dataSource

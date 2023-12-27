@@ -1,56 +1,76 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
 import { v4 } from 'uuid';
-import { Cart, CartStatuses } from '../models';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Cart as CartEntity } from '../../entities/carts.entity';
 import { Repository } from 'typeorm';
-import { CartItem } from '../../entities/cart_items.entity';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+
+import { Cart as CartEntity } from '../../entities/carts.entity';
+import { CartItem as CartItemEntity } from '../../entities/cart_items.entity';
+import { Cart, CartStatuses } from '../models';
 
 @Injectable()
 export class CartService {
   @InjectRepository(CartEntity)
-  private userCarts: Repository<CartEntity>;
+  private cart: Repository<CartEntity>;
 
-  @InjectRepository(CartItem)
-  private userCartsItems: Repository<CartItem>;
+  @InjectRepository(CartItemEntity)
+  private cartItems: Repository<CartItemEntity>;
+
+  async findCartById(cartId: string) {
+    try {
+      const cart = await this.cart.findOne({
+        where: { id: cartId },
+        relations: ['items', 'items.product'],
+      });
+
+      if (!cart) throw new NotFoundException('Cart not found');
+
+      return { ...cart };
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  }
 
   async findByUserId(userId: string) {
-    const cart = await this.userCarts.findOne({
-      where: { user_id: userId },
-    });
+    try {
+      const cart = await this.cart.findOne({
+        where: { user_id: userId },
+        relations: ['items', 'items.product'],
+      });
 
-    if (!cart) throw new NotFoundException('Cart not found');
+      if (!cart) throw new NotFoundException('Cart not found');
 
-    return cart;
+      return { ...cart };
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
   }
 
   async createByUserId(userId: string) {
     const id = v4();
-    const now = new Date().toDateString();
-
     const userCart = {
       id,
       user_id: userId,
-      created_at: now,
-      updated_at: now,
+      created_at: new Date().toDateString(),
+      updated_at: new Date().toDateString(),
       status: CartStatuses.OPEN,
     };
 
-    await this.userCarts.insert(userCart);
+    await this.cart.insert(userCart);
     return { ...userCart, items: [] };
   }
 
-  async findOrCreateByUserId(userId: string) {
+  async findOrCreateByUserId(userId: string): Promise<Cart> {
     const userCart = await this.findByUserId(userId);
-
     if (userCart) {
-      return userCart;
+      return userCart as Cart;
     }
 
-    return this.createByUserId(userId);
+    return await this.createByUserId(userId);
   }
 
-  async updateByUserId(userId: string, { items }: Cart) {
+  async updateByUserId(userId: string, { items }: Cart): Promise<Cart> {
     const { id, ...rest } = await this.findOrCreateByUserId(userId);
 
     const updatedCart = {
@@ -59,52 +79,41 @@ export class CartService {
       items: [...items],
     };
 
-    await this.userCarts.save(updatedCart);
+    await this.cart.save(updatedCart);
 
     return { ...updatedCart };
   }
 
-  async removeByUserId(userId: string) {
-    await this.userCarts.delete({ user_id: userId });
+  async removeByUserId(userId) {
+    await this.cart.delete({ user_id: userId });
   }
 
-  async findCartById(cartId: string) {
-    const cart = await this.userCarts.findOne({
-      where: { id: cartId },
-    });
-
-    if (!cart) throw new NotFoundException('Cart not found');
-
-    return cart;
-  }
-
-  async updateCartItemsCount(
+  async updateCartItemCount(
     cart_id: string,
     product_id: string,
     count: number,
   ) {
     if (count <= 0) {
-      await this.userCartsItems.delete({ cart_id, product_id });
+      await this.cartItems.delete({ cart_id, product_id });
     } else {
-      await this.userCartsItems.update({ cart_id, product_id }, { count });
+      await this.cartItems.update({ cart_id, product_id }, { count });
     }
 
     const updatedCart = await this.findCartById(cart_id);
-
     return updatedCart;
   }
 
   async addProductToCart(user_id: string, product_id: string, count: number) {
+    console.log(user_id, 'userId', product_id, 'product_id', count, 'count')
     const cart = await this.findOrCreateByUserId(user_id);
 
-    await this.userCartsItems.insert({
+    await this.cartItems.insert({
       cart_id: cart.id,
       product_id,
       count,
     });
 
     const updatedCart = await this.findCartById(cart.id);
-
     return updatedCart;
   }
 }

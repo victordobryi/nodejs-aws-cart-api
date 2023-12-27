@@ -3,12 +3,14 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
 import { Delivery, Payment } from '../order/models';
 import { Cart } from './carts.entity';
 import { User } from './users.entity';
+import { CartItem } from './cart_items.entity';
 
 @Entity({ name: 'orders' })
 export class Order {
@@ -43,4 +45,8 @@ export class Order {
   @ManyToOne(() => Cart, (cart) => cart.orders)
   @JoinColumn({ name: 'cart_id' })
   cart: Cart;
+
+  @OneToMany(() => CartItem, (cartItem) => cartItem.order)
+  @JoinColumn({ name: 'cart_id' })
+  items: CartItem[];
 }

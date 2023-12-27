@@ -8,7 +8,7 @@ import { BasicStrategy, JwtStrategy, LocalStrategy } from './strategies';
 import { JWT_CONFIG } from '../constants';
 import { UsersModule } from '../users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from 'src/entities/users.entity';
+import { User } from '../entities/users.entity';
 
 const { secret, expiresIn } = JWT_CONFIG;
 

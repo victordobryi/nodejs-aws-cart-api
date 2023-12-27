@@ -24,6 +24,9 @@ import 'dotenv/config';
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
       entities: [Cart, CartItem, User, Product, Order],
+      ssl: {
+        rejectUnauthorized: false,
+      },
     }),
   ],
   controllers: [AppController],

@@ -1,17 +1,18 @@
 import { Entity, ManyToOne, JoinColumn, Column, PrimaryColumn } from 'typeorm';
 import { Cart } from './carts.entity';
 import { Product } from './products.entity';
+import { Order } from './orders.entity';
 
 @Entity({ name: 'cart_items' })
 export class CartItem {
-  @PrimaryColumn({ type: 'uuid', nullable: false })
+  @PrimaryColumn()
   cart_id: string;
 
-  @ManyToOne(() => Cart, (cart) => cart.items)
+  @ManyToOne(() => Cart, (cart) => cart.items, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'cart_id' })
   cart: Cart;
 
-  @PrimaryColumn({ type: 'uuid', nullable: false })
+  @PrimaryColumn()
   product_id: string;
 
   @ManyToOne(() => Product, (product) => product.cartItems)
@@ -20,4 +21,8 @@ export class CartItem {
 
   @Column()
   count: number;
+
+  @ManyToOne(() => Order, (order) => order.items)
+  @JoinColumn({ name: 'order_id' })
+  order: Order;
 }
