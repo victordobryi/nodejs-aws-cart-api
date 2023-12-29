@@ -1,28 +1,37 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 
 import { v4 } from 'uuid';
 
 import { User } from '../models';
+import { InjectRepository } from '@nestjs/typeorm';
+import { User as UserEntity } from 'src/entities/users.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class UsersService {
-  private readonly users: Record<string, User>;
+  constructor(
+    @InjectRepository(UserEntity)
+    private readonly users: Repository<UserEntity>,
+  ) {}
 
-  constructor() {
-    this.users = {}
+  async findOne(name: string) {
+    try {
+      const user = await this.users.findOne({
+        where: { name },
+      });
+
+      if (!user) throw new NotFoundException('User not found');
+
+      return user;
+    } catch (error) {
+      console.log(error);
+    }
   }
 
-  findOne(userId: string): User {
-    return this.users[ userId ];
-  }
-
-  createOne({ name, password }: User): User {
+  async createOne({ name, password }: User) {
     const id = v4();
-    const newUser = { id: name || id, name, password };
-
-    this.users[ id ] = newUser;
-
+    const newUser = { id, name, password };
+    await this.users.save(newUser);
     return newUser;
   }
-
 }
