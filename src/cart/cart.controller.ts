@@ -16,7 +16,7 @@ import { AppRequest, getUserIdFromRequest } from '../shared';
 import { calculateCartTotal } from './models-rules';
 import { CartService } from './services';
 import { Cart } from './models';
-import { BasicAuthGuard } from 'src/auth';
+import { BasicAuthGuard } from '../auth';
 
 @Controller('api/profile/cart')
 export class CartController {
@@ -45,7 +45,7 @@ export class CartController {
   @Put()
   async updateUserCart(@Req() req: AppRequest, @Body() body) {
     let cart = null;
-    console.log(body, 'body')
+    console.log(body, 'body');
     if (body.cartId) {
       cart = await this.cartService.updateCartItemCount(
         body.cartId,

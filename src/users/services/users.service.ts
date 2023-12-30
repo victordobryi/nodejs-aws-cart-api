@@ -4,7 +4,7 @@ import { v4 } from 'uuid';
 
 import { User } from '../models';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User as UserEntity } from 'src/entities/users.entity';
+import { User as UserEntity } from '../../entities/users.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()
