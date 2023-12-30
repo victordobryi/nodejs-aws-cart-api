@@ -1,0 +1,18 @@
+#These folders will created in docker build process
+node_modules
+dist
+
+#These folders don't use in production version
+SQL
+test
+
+#These files are not used in the application
+.dockerignore
+.env* 
+.eslintrc.js
+.pritierrc
+Dockerfile
+README.md
+.gitignore
+.git
+
