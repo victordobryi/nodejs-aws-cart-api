@@ -1,5 +1,5 @@
 # ---- Base Node image ----
-FROM node:20-alpine3.16 as base
+FROM node:14-alpine as base
 WORKDIR /app
 
 # ---- Dependencies ----
@@ -18,7 +18,8 @@ COPY * ./
 RUN npm run build
 
 # ---- Release with Alpine ----
-FROM node:20-alpine3.16 as release
+FROM node:14-alpine as release
+ENV NODE_ENV=production
 WORKDIR /app
 COPY --from=dependencies /app/package.json ./
 
